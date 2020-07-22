@@ -1,4 +1,4 @@
-# SQL バージョン
+# 4 は、SQL バージョン
 ##
 
 # While i <151: つまり商品数１５１まで＝５０件/ページの３ページまでスクレイプする　
@@ -9,33 +9,33 @@
 
 import pandas as pd
 import numpy as np
-from openpyxl import load_workbook
+# from openpyxl import load_workbook
 import time
 import re
 
 import requests, bs4
-import lxml.html
-from pymongo import MongoClient
-import xlwings as xw
-import math
-from selenium import webdriver
-from selenium.common.exceptions import NoSuchElementException
-from xlwings.constants import AutoFillType
-import shutil
+# import lxml.html
+# from pymongo import MongoClient
+# import xlwings as xw
+# import math
+# from selenium import webdriver
+# from selenium.common.exceptions import NoSuchElementException
+# from xlwings.constants import AutoFillType
+# import shutil
 from datetime import datetime
 from uuid import uuid4
 from googletrans import Translator
 import json
-# import pandas as pd
-import pythoncom
-from pythoncom import com_error
-import win32com.client
-import win32com
-import sys
+# # import pandas as pd
+# import pythoncom
+# from pythoncom import com_error
+# import win32com.client
+# import win32com
+# import sys
 import psycopg2
 from sqlalchemy import create_engine
 
-M
+
 
 def main():
     # check_if_Excel_runs()
@@ -46,12 +46,12 @@ def main():
         'user': 'postgres',
         'password': 'larc1225',
         'host': 'localhost',
-        'port': '5433',  # なくてもOK
+        'port': '5432',  # なくてもOK
         'database': 'scraping'
     }
     global engine
     engine = create_engine(
-        'postgresql://postgres:larc1225@localhost:5433/scraping'.format(**connection_config))
+        'postgresql://postgres:larc1225@localhost:5432/scraping'.format(**connection_config))
 
     # 検索キーは、後の間を＋にする必要があるが、これエクセルの時点でやるか、ここでやるか> planner では空白で複合キーを生成するので、変更はここで
 
@@ -67,7 +67,8 @@ def main():
     # wb2 = app.books.open(atk)
     # sht2 = wb2.sheets[0]
     arr_title_url_id_ = np.empty([0, 3])
-        #                                        0~ other japanese antique  14~ painting  18= prints
+
+      #                                        0~ other japanese antique  14~ painting  18= prints
     #                                             ドラゴンボール 37  ラストは４５
             # これは不便、カテゴリ指定で検索ワードをグループ化しながら、毎日自動リサしてほしい
     # keyPhraase 番号振っても、途中からのリサにならない
@@ -312,7 +313,7 @@ def main():
     # app.kill()
     #
     # from sample_codes import elems_yahoo4 as elyahoo
-    el_csv = r'C:/Users/Kazuki Yuno/Desktop/00.Myself/04.Buyer/1.利益計算/db_yahoo_elements.csv'
+    el_csv = r'C:/Users/kazuki_juno/Desktop/00.Myself/04.Buyer/1.利益計算/db_yahoo_elements.csv'
     with open(el_csv, 'w', encoding='utf-8-sig', newline='', errors='ignore') as f:
         # elyahoo.main(f, el_csv, concat2)
         el_main(f, el_csv, elems_id_txt)
@@ -423,7 +424,7 @@ def el_main(f, el, txt):
         ', ', expand=True)], axis=1).iloc[:, [0, 2, 3]]  # drop([1], axis=1)
     pr_df2.column = ['現在価格', '即決価格']
     print(pr_df2)  # 0, 2, 3 列目のみ表示
-    pr_csv = 'C:/Users/Kazuki Yuno/Desktop/00.Myself/04.Buyer/1.利益計算/db_check_yahoo4.csv'
+    pr_csv = 'C:/Users/kazuki_juno/Desktop/00.Myself/04.Buyer/1.利益計算/db_check_yahoo4.csv'
     pr_df2.to_csv(pr_csv, header=False, index=False)
 
     concat2 = pd.concat([concat, descon_df, grped, pr_df2])
