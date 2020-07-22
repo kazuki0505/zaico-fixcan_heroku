@@ -7,13 +7,13 @@
 # 　# mBall_yahooもmBall_atkも、画像１枚目を取得するかしないかの違いで、ほかは全く同じだから
 
 
-import pandas as pd
-import numpy as np
-# from openpyxl import load_workbook
-import time
-import re
-
-import requests, bs4
+# import pandas as pd
+# import numpy as np
+# # from openpyxl import load_workbook
+# import time
+# import re
+#
+# import requests, bs4
 # import lxml.html
 # from pymongo import MongoClient
 # import xlwings as xw
