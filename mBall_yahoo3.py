@@ -35,14 +35,17 @@ def main():
     # check_if_Excel_runs()
     # wb = r'C:\Users\Kazuki Yuno\Desktop\00.myself\04.Buyer\0.リサーチ\keyword\key_generator.xlsx'
     atk = r"C:/Users/Kazuki Yuno/Desktop/00.Myself/04.Buyer/1.利益計算/AtackList_Buyer43.xlsx"
+
     # 検索キーは、後の間を＋にする必要があるが、これエクセルの時点でやるか、ここでやるか> planner では空白で複合キーを生成するので、変更はここで
     df = pd.read_excel(
         atk, 'market', skiprows=2, usecols=['categ num', 'main key', 'キーフレーズ'])\
         .dropna(subset=['キーフレーズ']) # キーフレーズ列のNan を消して表示
+
     categ_num_list = df.iloc[:, 0]#'categ num']
     mainKey_list = df.iloc[:, 1]#'main key'
     keyPhrase_list = df.iloc[:, 2] #['X-MEN 同人誌', 'batman 同人誌'] #.get_group('X-MEN 同人誌', 'batman 同人誌') # 検索キーを減らしたいなら、ここで
                                     # iloc、第一引数が行
+
     app = xw.App(visible=True)  # False)
     wb2 = app.books.open(atk)
     sht2 = wb2.sheets[0]
