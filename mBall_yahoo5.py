@@ -406,7 +406,7 @@ def el_main(f, el, txt, concat2):
             日件 = soup.select('.Count__number')
             日件2 = remove_space_htmlTag_pr(str(日件))
             # print(日件2)
-            if '終了' in 日件2:  # 終了品は elems=価格 を空白に
+            if '終了' in 日件2:  # 終了品は elems=価格 を空白にjupy
                 # print(日件2)
                 price2 = ', '  # 空白のみだと、「, 」で分割する時エラー起きる
                 # print(price2)  # + ' 終了')
@@ -478,7 +478,7 @@ def el_main(f, el, txt, concat2):
     #     列ごと置換し、列ごと計算
 
     # 相場価格 = IF(AX8=0, AV8*3, AX8*1.5) # AX 即決価格、AV= 現在価格 # 両者とも、Zaicoした後にわかること。
-    相場価格 =  現在価格* 3 if 即決価格 == 0 else 即決価格* 1.5
+    相場価格 =  現在価格* 3 if 即決価格 == 0 else 現在価格* 1.5
     自己設定価格 = 0
     最高販売価格 = 0 if not str(max(相場価格, 自己設定価格)).isnumeric() else max(相場価格, 自己設定価格)
     # もし最大値が数値でないなら 0, 数値なら最大値
