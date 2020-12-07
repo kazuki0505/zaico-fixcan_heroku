@@ -49,17 +49,19 @@ def main():
     # wb = r'C:\Users\Kazuki Yuno\Desktop\00.myself\04.Buyer\0.リサーチ\keyword\key_generator.xlsx'
 # データベースの接続情報
     connection_config = {
-        'user': 'postgres',
-        'password': 'larc1225',
+        'user': 'kazuki005', # 'postgres',
+        'password': 'Larc-1225', # larc1225
         'host': 'localhost', #'127.0.0.1'
         'port': '5432',  # なくてもOK
         'database': 'scraping' #'postgres'
     }
     global engine
     engine = create_engine(
-        'postgresql://postgres:larc1225@localhost:5432/scraping'.format(**connection_config))
-
+        'postgresql://postgres:Larc-1225@localhost:5432/scraping'.format(**connection_config))
+        # larc1225 postgres
         # 検索キーは、後の間を＋にする必要があるが、これエクセルの時点でやるか、ここでやるか> planner では空白で複合キーを生成するので、変更はここで
+
+    # con = psycopg2.connect
 
     market_df = pd.read_sql('market', con=engine, # SELECT文ではなく、テーブル名のみ
         columns=['categ num', 'main key', 'キーフレーズ'])\
@@ -172,46 +174,35 @@ def main():
             return text[:n]
         merge_title = left(merge['タイトル'], 75).replace("e.g.", "").replace("™", "").\
             replace("♥", "").replace("½", "").replace("★", "").replace("&", "").\
-            replace("◆", "").replace("■", "").to_list()
+            replace("◆", "").replace("■", "").replace("〇", "").replace("●", "").\
+            replace("▽", "").replace("▼", "").replace("△", "").replace("▲", "").\
+            replace("", "").replace("■", "").replace("■", "").replace("■", "") #.to_list()
 
-        #     merge_title = merge_title.reset_index()
+        # merge_title = merge_title.reset_index()
         # print(merge_title)
         # ループで一行ずつ翻訳、Excelに入力＞ 一行ずつ翻訳、リストにしてSeries化
         translator = Translator()
-        # i = 0
+        i = 0
         title_en_list = []
         #     print(len(merge))
         #     print(len(merge_title))
-        # while len(merge) > i: # 制限達したら、これパスしてXW転記もしないことにする。　一度エラー起きれば、リトライしてもずっとエラーだから、While要らない
-        #     try:
-        #         print('a')
-            # lastRow_title2 = sht2.range('F4').end(-4121).row  # ATK H=タイトル列
-            # # lastRow_title2 = df2.iloc[:, 5].tail(n) # F= ５番目= 英訳の列  # tail(n)で、最下行を求める
-            # nextRow2 = lastRow_title2 + 1
-
-            # 文字列制限＋記号の置換をしてから、翻訳。
-        #             def left(text, n):
-        #                 return text[:n]
-        #             merge
-        #             merge_title = left(merge['タイトル'], 75).replace("e.g.", "").replace("™", "").replace("♥", "").replace("½", "").replace("★", "").replace("&", "").replace("◆", "").replace("■", "")
-        #             print(merge_title)
-                # 英訳
-                # merge_en = merge_title.iloc[i: i+1]#.apply( #一行ずつ翻訳
-        #                 translator.translate, src='ja', dest='en').apply(getattr, args=('text',))
-        #
+        while len(merge) > i: # 制限達したら、これパスしてXW転記もしないことにする。　一度エラー起きれば、リトライしてもずっとエラーだから、While要らない
+            try:
+                #一行ずつ翻訳
+                merge_en = merge_title.iloc[i: i+1].\
+                    apply(translator.translate, src='ja', dest='en').\
+                    apply(getattr, args=('text',)).to_string(index=False) # values によってDtypeやNameといった情報が除外される
         #             上記の２行で、17行目の余分な値が発生している。Series[]
-
                 # print(merge_en)  # 1つのSeries　になる
-                # title_en_list.append(merge_en)
-
+                title_en_list.append(merge_en)
                 # df2.iloc[nextRow2, 5] = merge_en # 5列目, nextrowの行から
                 # sht2.range('F{}'.format(nextRow2)).options(
                 #     pd.Series, expand='table', index=False, header=None).value = merge_en
-                # i += 1
+                i += 1
 
-            # except json.decoder.JSONDecodeError as e:
-            #     print(str(e) + ' json Decoder Error 発生。本日の上限を達した模様。次へ') #リトライ...')
-            #     break
+            except json.decoder.JSONDecodeError as e:
+                print(str(e) + ' json Decoder Error 発生。本日の上限を達した模様。次へ') #リトライ...')
+                break
                 # time.sleep(1)
                 # continue ここContinueのせいで、以降の作動にはいかず、次の検索フレーズループへ進む
 
@@ -221,40 +212,47 @@ def main():
 
         # merge_title をSeries> リストに変換し、ループで一つずつ翻訳してtitle_en_list へAppend
         # iloc でSeriesを一つずつカットする上の方法は、インデックスまで取り込むためか、後にSeries化するとインデックスのための列が2列もできてしまう
-        for merge_en in merge_title: # Mergeの長さ16までループさせるのは、ここでも必要？
-            try:
-            # merge_en.apply(translator.translate, src='ja', dest='en').apply(getattr, args=('text',)))
-            #     print(merge_en)  # 1つのSeries　になる
-                title_en_list.append(merge_en)
-            except json.decoder.JSONDecodeError as e:
-                print(str(e) + ' json Decoder Error 発生。本日の上限を達した模様。次へ') #リトライ...')
-                break
+
+        # for merge_en in merge_title: # Mergeの長さ16までループさせるのは、ここでも必要？
+        #     try:
+        #         merge_en.apply(translator.translate, src='ja', dest='en').apply(getattr, args=('text',))
+        #         print(merge_en) # 1つのSeries になる
+        #         title_en_list.append(merge_en)
+            # except json.decoder.JSONDecodeError as e:
+            #     print(str(e) + ' json Decoder Error 発生。本日の上限を達した模様。次へ') #リトライ...')
+            #     break
+
+
         # ここでSQLテーブルのタイトル列へ自動で移動する
         title_en_list_sr = pd.Series(title_en_list, name='Title', index=None).reset_index(drop=True)#, inplace=True)#, index=None)#, name=None)
-        # merge_en.columns = 'Title'  # 列名をTitleにすることで、SQLのTitle列に追加される
-        # title_en_list_sr
-
-        # break
-        # lastRow_title1 = sht2.range('H4').end(-4121).row  # ATK H=タイトル列
-        # lastRow_title1 = df2.iloc[:, 7].tail(n) # H= 7
-        # nextRow = lastRow_title1 + 1
-
-        # URLとタイトルのDF=mergeを、to_sql
-        # merge（URLとタイトルのdf） にmainkey, categ_numのdfを加え、SQL。
+        # # merge_en.columns = 'Title'  # 列名をTitleにすることで、SQLのTitle列に追加される
+        # # title_en_list_sr
+        #
+        # # lastRow_title1 = sht2.range('H4').end(-4121).row  # ATK H=タイトル列
+        # # break
+        # # lastRow_title1 = df2.iloc[:, 7].tail(n) # H= 7
+        # # nextRow = lastRow_title1 + 1
+        #
+        # # URLとタイトルのDF=mergeを、to_sql
+        # # merge（URLとタイトルのdf） にmainkey, categ_numのdfを加え、SQL。
         main_categ_df = pd.DataFrame({'main key': mainKey, 'Category': categ_num},
                                      index=[0, 1]) # index入れないとエラーになる　http://nishidy.hatenablog.com/entry/2016/03/10/015337
 
-        # ### main_categのインデックスを空白から数字にすると、横連結すると起きた ValueError: Shape of passed values is... というのが解決した
+        # 翻訳リミットが起きなかったループのみMergeと統合し、List_dfに蓄積していく
 
+        # ### main_categのインデックスを空白から数字にすると、横連結すると起きた ValueError: Shape of passed values is... というのが解決した
         concat = pd.concat([merge, title_en_list_sr, main_categ_df], axis=1).\
             fillna(method='pad')
         # concat = pd.concat([merge, main_categ_df], axis=1)
-        # concat
-
         # ### DF空箱にループ追加
         list_df = list_df.append(concat, ignore_index=True)
-        # list_df
         # #### main key, Categoryの列を、他列の行数まで同じ値で埋め合わせるためfillna(pad)を使えると思ったが、Numpyでは無理みたい。
+
+        # ここで英訳リミットが来た時点のループでストップさせる処理
+        # if e: # が起きたら
+        #     break
+
+        break
 
     # #### SKUを全ループ追加分を作成し、その列を横付け
     id_col = list_df['ID'] #.iloc[] # SKU
@@ -283,7 +281,7 @@ def main():
     # macro()
     # shutil.move('C:/Users/Kazuki Yuno/Desktop/00.Myself/04.Buyer/1.利益計算/db_check_yahoo_elem.txt',
     #             'C:/Windows/System32/ScrapingTool_Init/sample_codes/db_check_yahoo_elem.txt')
-    elems_id_txt = r'C:/Windows/System32/ScrapingTool_Init/sample_codes/zaico-fixcan/db_check_yahoo_elem.txt'
+    elems_id_txt = r'C:\zaico-fixcan_heroku\db_check_yahoo_elem.txt'
     id_col.to_csv(elems_id_txt,
               header=None, index=None, sep=' ')#, mode='a') # mBall_elem_zaicoは、追加された分のIDの価格だけでいい
 
@@ -314,7 +312,7 @@ def main():
     # fr = [element for element in result.h3 if isinstance(element, NavigableString)]
     # print(fr[0])
 
-    el_csv = r'C:/Users/kazuki_juno/Desktop/00.Myself/04.Buyer/1.利益計算/db_yahoo_elements.csv'
+    el_csv = r'C:\zaico-fixcan_heroku/db_yahoo_elements.csv' #C:/Users/kazuki_juno/Desktop/00.Myself/04.Buyer/1.利益計算/db_yahoo_elements.csv'
     with open(el_csv, 'w', encoding='utf-8-sig', newline='', errors='ignore') as f:
         # elyahoo.main(f, el_csv, concat2)
         el_main(f, el_csv, elems_id_txt, concat2)
@@ -574,7 +572,7 @@ def el_main(f, el, txt, concat2):
     #     pr_df2.column = ['ID', '現在価格', '即決価格']
     #     ここコメントアウトする2つのうち一つエラー消える
 
-    pr_csv = 'C:/Users/kazuki_juno/Desktop/00.Myself/04.Buyer/1.利益計算/db_check_yahoo4.csv'
+    pr_csv = 'C:\zaico-fixcan_heroku\db_check_yahoo4.csv' #'C:/Users/kazuki_juno/Desktop/00.Myself/04.Buyer/1.利益計算/db_check_yahoo4.csv'
     pr_df2.to_csv(pr_csv, header=False, index=False)
 
     concat3 = pd.concat([concat2, descon_df, img_grped, pr_df2], axis=1) #ここが問題
@@ -753,7 +751,7 @@ def el_main(f, el, txt, concat2):
     concat_fin = pd.concat([concat3, funcs_df], axis=1).drop('index', axis=1)#.fillna(method='pad')
     print(concat_fin)
     concat_fin.to_csv('concat_fin.csv')
-    concat_fin.to_sql('atklist2', con=engine, if_exists='append',  # or replace
+    concat_fin.to_sql('atklist4', con=engine, if_exists='append',  # or replace
                     index=False)
     # el_main()
 

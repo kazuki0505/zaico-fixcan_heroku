@@ -8,13 +8,13 @@
 
 
 # import pandas as pd
-# import numpy as np
-# # from openpyxl import load_workbook
-# import time
-# import re
+import numpy as np
+from openpyxl import load_workbook
+import time
+import re
 #
-# import requests, bs4
-# import lxml.html
+import requests, bs4
+import lxml.html
 # from pymongo import MongoClient
 # import xlwings as xw
 # import math
@@ -26,7 +26,7 @@ from datetime import datetime
 from uuid import uuid4
 from googletrans import Translator
 import json
-# # import pandas as pd
+import pandas as pd
 # import pythoncom
 # from pythoncom import com_error
 # import win32com.client
@@ -162,6 +162,8 @@ def main():
                     return text[:n]
                 merge_title = left(merge['タイトル'], 75).replace("e.g.", "").replace("™", "").replace("♥", "").replace("½", "").\
                 replace("★", "").replace("&", "").replace("◆", "").replace("■", "")
+
+
 
                 merge_en = merge_title.iloc[i: i+1].apply( #一行ずつ翻訳
                     translator.translate, src='ja', dest='en').apply(getattr, args=('text',))

@@ -8,6 +8,7 @@ import numpy as np
 from collections import Counter
 import os
 import shutil
+
 import selenium
 # from modules_scraping import readTxt_submitAuc_mod as submitAuc
 # import urllist_bs4_yahoo_prices3 as ubyp

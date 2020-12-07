@@ -130,7 +130,9 @@ def main():
             try:
                 lastRow_title2 = sht2.range('F4').end(-4121).row  # ATK H=タイトル列
                 nextRow2 = lastRow_title2 + 1
-                merge_en = merge['タイトル'].iloc[i: i+1].apply(translator.translate, src='ja', dest='en').apply(getattr, args=('text',))
+
+                merge_en = merge['タイトル'].iloc[i: i+1].apply(
+                    translator.translate, src='ja', dest='en').apply(getattr, args=('text',))
                 # print(merge_en) # 1つのSeries　になる
                 # 不要文字を置換
                 sht2.range('F{}'.format(nextRow2)).options(
