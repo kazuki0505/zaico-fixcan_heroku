@@ -39,7 +39,7 @@ import json
 # import win32com.client
 # import win32com
 # import sys
-import psycopg2
+# import psycopg2
 from sqlalchemy import create_engine
 import numpy as np
 
@@ -228,7 +228,7 @@ def main():
         # # title_en_list_sr
         #
         # # lastRow_title1 = sht2.range('H4').end(-4121).row  # ATK H=タイトル列
-         # # break
+        # # break
         # # lastRow_title1 = df2.iloc[:, 7].tail(n) # H= 7
         # # nextRow = lastRow_title1 + 1
         #
