@@ -222,14 +222,13 @@ def main():
             #     print(str(e) + ' json Decoder Error 発生。本日の上限を達した模様。次へ') #リトライ...')
             #     break
 
-
         # ここでSQLテーブルのタイトル列へ自動で移動する
         title_en_list_sr = pd.Series(title_en_list, name='Title', index=None).reset_index(drop=True)#, inplace=True)#, index=None)#, name=None)
         # # merge_en.columns = 'Title'  # 列名をTitleにすることで、SQLのTitle列に追加される
         # # title_en_list_sr
         #
         # # lastRow_title1 = sht2.range('H4').end(-4121).row  # ATK H=タイトル列
-        # # break
+         # # break
         # # lastRow_title1 = df2.iloc[:, 7].tail(n) # H= 7
         # # nextRow = lastRow_title1 + 1
         #
