@@ -1,1 +1,1 @@
-web: gunicorn zaico-fixcan_heroku.wsgi --log-file - 
+web: python mBall_yahoo5.py 
