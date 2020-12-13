@@ -39,7 +39,7 @@ import json
 # import win32com.client
 # import win32com
 # import sys
-# import psycopg2
+import psycopg2
 from sqlalchemy import create_engine
 import numpy as np
 
