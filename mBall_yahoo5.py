@@ -331,7 +331,7 @@ def el_main(f, el, txt, concat2):
     # print(arr)
     for page_id in page_id_list: #[:5]: #[10:]:#[347:352]:#[:10]:
         print(page_id)
-        url = f'https://page.auctions.yahoo.co.jp/jp/auction/{page_id}'
+        url = f"https://page.auctions.yahoo.co.jp/jp/auction/{page_id}"
         try:
             res = requests.get(url.strip())
             res.raise_for_status()
