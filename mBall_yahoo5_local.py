@@ -48,31 +48,18 @@ def main():
     # check_if_Excel_runs()
     # wb = r'C:\Users\Kazuki Yuno\Desktop\00.myself\04.Buyer\0.リサーチ\keyword\key_generator.xlsx'
 # データベースの接続情報
-#     connection_config = {
-#         'user': 'kazuki005', # 'postgres',
-#         'password': 'Larc-1225', # larc1225
-#         'host': 'localhost', #'127.0.0.1'
-#         'port': '5432',  # なくてもOK
-#         'database': 'scraping' #'postgres'
-#     }
-#     global engine
-#     engine = create_engine(
-#         'postgresql://postgres:Larc-1225@localhost:5432/scraping'.format(**connection_config))
-        # larc1225 postgres
-        # 検索キーは、後の間を＋にする必要があるが、これエクセルの時点でやるか、ここでやるか> planner では空白で複合キーを生成するので、変更はここで
-
-    # Heroku Postgresのコンフィグ
     connection_config = {
-        'host': 'ec2-54-210-128-153.compute-1.amazonaws.com',
-        'database': 'd5evq9s0k3ah3p',
-        'user': 'tdmhdafruvebzx',
-        'port': '5432',
-        'password': '2b49dd7bf409cc17dfd288cf43faf04eef06e800e17fe2cab498191ac8b6373e'
+        'user': 'kazuki005', # 'postgres',
+        'password': 'Larc-1225', # larc1225
+        'host': 'localhost', #'127.0.0.1'
+        'port': '5432',  # なくてもOK
+        'database': 'scraping' #'postgres'
     }
     global engine
     engine = create_engine(
-        'postgres://tdmhdafruvebzx:2b49dd7bf409cc17dfd288cf43faf04eef06e800e17fe2cab498191ac8b6373e@ec2-54-210-128-153.compute-1.amazonaws.com:5432/d5evq9s0k3ah3p'.
-            format(**connection_config))
+        'postgresql://postgres:Larc-1225@localhost:5432/scraping'.format(**connection_config))
+        # larc1225 postgres
+        # 検索キーは、後の間を＋にする必要があるが、これエクセルの時点でやるか、ここでやるか> planner では空白で複合キーを生成するので、変更はここで
 
     # con = psycopg2.connect
 
