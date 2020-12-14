@@ -157,7 +157,7 @@ def main():
         # ここにsql_df 入れなくて良い？？ >> ループごとに、追加したてのタイトルも比較対象にしたいから、ここに入れて。違うキーで調べても、同じ品を取るケースに備えて
         # df1
 
-        sql_df = pd.read_sql('atklist2', con=engine,
+        sql_df = pd.read_sql('atklist4', con=engine,
                              columns=['タイトル'])  # skiprows=2, encoding='cp932') #.columns = ['t\\itle']
         # for index, row in df.iterrows():
         #     if row # row['開始価格'] == row['開始価格2']
