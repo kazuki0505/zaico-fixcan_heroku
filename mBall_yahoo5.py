@@ -43,6 +43,9 @@ import psycopg2
 from sqlalchemy import create_engine
 import numpy as np
 
+import os
+current_dir = os.getcwd()
+
 
 def main():
     # check_if_Excel_runs()
@@ -293,7 +296,7 @@ def main():
     # macro()
     # shutil.move('C:/Users/Kazuki Yuno/Desktop/00.Myself/04.Buyer/1.利益計算/db_check_yahoo_elem.txt',
     #             'C:/Windows/System32/ScrapingTool_Init/sample_codes/db_check_yahoo_elem.txt')
-    elems_id_txt = r'C:\zaico-fixcan_heroku\db_check_yahoo_elem.txt'
+    elems_id_txt = f'{current_dir}\db_check_yahoo_elem.txt' # r'C:\zaico-fixcan_heroku\db_check_yahoo_elem.txt'
     id_col.to_csv(elems_id_txt,
               header=None, index=None, sep=' ')#, mode='a') # mBall_elem_zaicoは、追加された分のIDの価格だけでいい
 
@@ -324,7 +327,7 @@ def main():
     # fr = [element for element in result.h3 if isinstance(element, NavigableString)]
     # print(fr[0])
 
-    el_csv = r'C:\zaico-fixcan_heroku/db_yahoo_elements.csv' #C:/Users/kazuki_juno/Desktop/00.Myself/04.Buyer/1.利益計算/db_yahoo_elements.csv'
+    el_csv = f'{current_dir}\db_yahoo_elements.csv' # r'C:\zaico-fixcan_heroku/db_yahoo_elements.csv' #C:/Users/kazuki_juno/Desktop/00.Myself/04.Buyer/1.利益計算/db_yahoo_elements.csv'
     with open(el_csv, 'w', encoding='utf-8-sig', newline='', errors='ignore') as f:
         # elyahoo.main(f, el_csv, concat2)
         el_main(f, el_csv, elems_id_txt, concat2)
@@ -584,7 +587,7 @@ def el_main(f, el, txt, concat2):
     #     pr_df2.column = ['ID', '現在価格', '即決価格']
     #     ここコメントアウトする2つのうち一つエラー消える
 
-    pr_csv = 'C:\zaico-fixcan_heroku\db_check_yahoo4.csv' #'C:/Users/kazuki_juno/Desktop/00.Myself/04.Buyer/1.利益計算/db_check_yahoo4.csv'
+    pr_csv = f'{current_dir}\db_check_yahoo4.csv' #'C:\zaico-fixcan_heroku\db_check_yahoo4.csv' #'C:/Users/kazuki_juno/Desktop/00.Myself/04.Buyer/1.利益計算/db_check_yahoo4.csv'
     pr_df2.to_csv(pr_csv, header=False, index=False)
 
     concat3 = pd.concat([concat2, descon_df, img_grped, pr_df2], axis=1) #ここが問題
