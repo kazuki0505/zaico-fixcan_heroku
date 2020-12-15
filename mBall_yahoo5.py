@@ -299,7 +299,7 @@ def main():
     # elems_id_txt = f'{current_dir}\db_check_yahoo_elem.txt' # r'C:\zaico-fixcan_heroku\db_check_yahoo_elem.txt'
     # id_col.to_csv(elems_id_txt,
     #           header=None, index=None, sep=' ')#, mode='a') # mBall_elem_zaicoは、追加された分のIDの価格だけでいい
-    id_col.to_sql('elem_id', con=engine, if_exists='append',  # or replace
+    id_col.to_sql('1.elem_id', con=engine, if_exists='append',  # or replace
                   index=False)
 
     # time.sleep(10) # 時間置かないと、elems_yahooでTxtファイルがないと言われることがある
@@ -383,7 +383,7 @@ def el_main(id_col, concat2): # el
                 elem_list = [elems_d, elems_c, page_id_for_scrape]
 
                 elem_list = pd.DataFrame(elem_list)
-                elem_list.to_sql('elems_dcid', con=engine, if_exists='append',  # or replace
+                elem_list.to_sql('2.elems_dcid', con=engine, if_exists='append',  # or replace
                     index=False)
                 # writer.writerow(elem_list)
                 time.sleep(0.2)
@@ -521,7 +521,7 @@ def el_main(id_col, concat2): # el
         elem_list = [elems_d, elems_c, page_id_for_scrape]
         # writer.writerow(elem_list)
         elem_list = pd.DataFrame(elem_list)
-        elem_list.to_sql('elems_dcid', con=engine, if_exists='append',  # or replace
+        elem_list.to_sql('3.elems_dcid', con=engine, if_exists='append',  # or replace
                     index=False) # 前回は同じCSVファイルに出してたから、同じSQLデータベースで良いはず
 
         dc_np = np.array([[page_id_for_scrape], [elems_d], [elems_c]]).T  # transpose()  # elem_img]) # src_list]
@@ -546,7 +546,9 @@ def el_main(id_col, concat2): # el
     # 画像
     img_df = pd.DataFrame(arr_img)
     print(img_df)
-    img_df.to_csv('df_img.csv')
+    # img_df.to_csv('df_img.csv')
+    img_df.to_sql('4.img_df', con=engine, if_exists='append',  # or replace
+                    index=False)
     # def img_spread(arr):  # (img_list):
     img_df = pd.DataFrame(arr_img, columns=['ID', '画像'])  # .iloc[:, 1:]
     img_df.columns = ['ID', '画像']  # 列名指定 # ここに価格２列を追加
@@ -580,7 +582,9 @@ def el_main(id_col, concat2): # el
     # 2行分のズレが生じてるのは、このmergeによるものなのでは？では、マージではなく, 逆に並べる動作をすれば
     # merge = pd.merge(id_df, grped, on='ID', how='outer') # 外部結合なら、どちらかに無い値はNaNと表示される
     # print(merge)
-    img_grped.to_csv('merge_imgs3.csv')
+    # img_grped.to_csv('merge_imgs3.csv')
+    img_grped.to_sql('5.img_grped', con=engine, if_exists='append',  # or replace
+                    index=False)
     # img_spread(arr_img)
 
     #  価格のDF化
@@ -597,13 +601,16 @@ def el_main(id_col, concat2): # el
     #     pr_df2.column = ['ID', '現在価格', '即決価格']
     #     ここコメントアウトする2つのうち一つエラー消える
 
-    pr_csv = f'{current_dir}\db_check_yahoo4.csv' #'C:\zaico-fixcan_heroku\db_check_yahoo4.csv' #'C:/Users/kazuki_juno/Desktop/00.Myself/04.Buyer/1.利益計算/db_check_yahoo4.csv'
-    pr_df2.to_csv(pr_csv, header=False, index=False)
+    # pr_csv = f'{current_dir}\db_check_yahoo4.csv' #'C:\zaico-fixcan_heroku\db_check_yahoo4.csv' #'C:/Users/kazuki_juno/Desktop/00.Myself/04.Buyer/1.利益計算/db_check_yahoo4.csv'
+    # pr_df2.to_csv(pr_csv, header=False, index=False)
+    pr_df2.to_sql('6.pr_df2', con=engine, if_exists='append',  # or replace
+                    index=False)
 
     concat3 = pd.concat([concat2, descon_df, img_grped, pr_df2], axis=1) #ここが問題
                          # 説明と状態、画像、価格
-    concat3.to_csv('concat3.csv')
-
+    # concat3.to_csv('concat3.csv')
+    concat3.to_sql('7.concat3', con=engine, if_exists='append',  # or replace
+                    index=False)
     # # sql から追加した分を読み取る？
     # # 価格を含めたDFを、後の現在価格の列を用いて計算するため、
     # sql_df = pd.read_sql()
@@ -771,11 +778,13 @@ def el_main(id_col, concat2): # el
                             '支出合計': 支出合計, '仕入れ値上限': 仕入れ値上限, '営業利益': 営業利益,
                            '利益率': 利益率, '販売額': 販売額, '希望営業利益': 希望営業利益,
                            'Positive': Positive, 'Middle': Middle, 'Negative': Negative})
-    funcs_df.to_csv('funcs_df.csv')
+    # funcs_df.to_csv('funcs_df.csv')
+    funcs_df.to_sql('8.funcs_df', con=engine, if_exists='append',  # or replace
+                    index=False)
     # funcs_df
     concat_fin = pd.concat([concat3, funcs_df], axis=1).drop('index', axis=1)#.fillna(method='pad')
     print(concat_fin)
-    concat_fin.to_csv('concat_fin.csv')
+    # concat_fin.to_csv('concat_fin.csv')
     concat_fin.to_sql('atklist4', con=engine, if_exists='append',  # or replace
                     index=False)
     # el_main()
