@@ -266,7 +266,6 @@ def main():
         # ここで英訳リミットが来た時点のループでストップさせる処理
         # if e: # が起きたら
         #     break
-
         break
 
     # #### SKUを全ループ追加分を作成し、その列を横付け
@@ -382,9 +381,9 @@ def el_main(id_col, concat2): # el
                 page_id_for_scrape = url.split('/')[-1]
                 elem_list = [elems_d, elems_c, page_id_for_scrape]
 
-                elem_list = pd.DataFrame(elem_list)
-                elem_list.to_sql('2.elems_dcid', con=engine, if_exists='append',  # or replace
-                    index=False)
+                # elem_list = pd.DataFrame(elem_list)
+                # elem_list.to_sql('2.elems_dcid', con=engine, if_exists='append',  # or replace
+                #     index=False)
                 # writer.writerow(elem_list)
                 time.sleep(0.2)
                 
@@ -520,9 +519,9 @@ def el_main(id_col, concat2): # el
 
         elem_list = [elems_d, elems_c, page_id_for_scrape]
         # writer.writerow(elem_list)
-        elem_list = pd.DataFrame(elem_list)
-        elem_list.to_sql('3.elems_dcid', con=engine, if_exists='append',  # or replace
-                    index=False) # 前回は同じCSVファイルに出してたから、同じSQLデータベースで良いはず
+        # elem_list = pd.DataFrame(elem_list)
+        # elem_list.to_sql('3.elems_dcid', con=engine, if_exists='append',  # or replace
+        #             index=False) # 前回は同じCSVファイルに出してたから、同じSQLデータベースで良いはず
 
         dc_np = np.array([[page_id_for_scrape], [elems_d], [elems_c]]).T  # transpose()  # elem_img]) # src_list]
         arr_descon = np.r_[arr_descon, dc_np]
