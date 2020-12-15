@@ -91,8 +91,8 @@ def main():
     # wb2 = app.books.open(atk)
     # sht2 = wb2.sheets[0]
 
-    # market_df
-    list_df = pd.DataFrame(columns=['タイトル', 'URL_y', 'ID', 'Title', 'main key', 'Category'])
+    list_df = pd.DataFrame(columns=['タイトル', 'URL_y', 'ID',
+                                    'Title', 'main key', 'Category'])
     # list_df
     # arr_title_url_id_ = np.empty([0, 3])
       #                                       0~ other japanese antique  14~ painting  18= prints
@@ -176,7 +176,9 @@ def main():
         # merge
         merge = df1.merge(sql_df[on], on=on, how='left', indicator=True)
         merge = merge.query('_merge == "left_only"').drop('_merge', 1).reset_index()  # 左＝df1にのみ存在する（(df2との重複を除く）タイトルにQueryしたあと、merge列を削除
-
+        print(merge)
+        # merge.to_csv('merge.csv',
+        #       header=None, index=None, sep=' ')
         # #### While try をコメントアウトしてるから後で戻して
         # #### リスト作成時、名前に連番が入ってしまうのを解決して
         # #### 18行にタイトルではない値が追加されてしまう＞iloc[i: i+1] の部分で、例えば17行まで来ると... ilocでインデックス17 =18行目（＝値なし）まで翻訳してリストにappendすることになる。 ＞＞ while len(merge) >= i: の = を外すことで解決。
@@ -242,7 +244,7 @@ def main():
         title_en_list_sr = pd.Series(title_en_list, name='Title', index=None).reset_index(drop=True)#, inplace=True)#, index=None)#, name=None)
         # # merge_en.columns = 'Title'  # 列名をTitleにすることで、SQLのTitle列に追加される
         # # title_en_list_sr
-        #
+
         # # lastRow_title1 = sht2.range('H4').end(-4121).row  # ATK H=タイトル列
         # # break
         # # lastRow_title1 = df2.iloc[:, 7].tail(n) # H= 7
@@ -251,16 +253,24 @@ def main():
         # # URLとタイトルのDF=mergeを、to_sql
         # # merge（URLとタイトルのdf） にmainkey, categ_numのdfを加え、SQL。
         main_categ_df = pd.DataFrame({'main key': mainKey, 'Category': categ_num},
-                                     index=[0, 1]) # index入れないとエラーになる　http://nishidy.hatenablog.com/entry/2016/03/10/015337
-
+                                     index=[0]) #, 1]) # index入れないとエラーになる　http://nishidy.hatenablog.com/entry/2016/03/10/015337
+                                    # index=[0, 1] だと0行目と1行目が重複する
+        # main_categ_df.to_csv('main_categ_df.csv',
+        #       header=None, index=None, sep=' ')
         # 翻訳リミットが起きなかったループのみMergeと統合し、List_dfに蓄積していく
 
+        # print(len(title_en_list_sr))
+        # print(len(main_categ_df))
         # ### main_categのインデックスを空白から数字にすると、横連結すると起きた ValueError: Shape of passed values is... というのが解決した
         concat = pd.concat([merge, title_en_list_sr, main_categ_df], axis=1).\
             fillna(method='pad')
+        # concat.to_csv('concat.csv',
+        #       header=None, index=None, sep=' ')
         # concat = pd.concat([merge, main_categ_df], axis=1)
         # ### DF空箱にループ追加
         list_df = list_df.append(concat, ignore_index=True)
+        # list_df.to_csv('list_df.csv',
+        #       header=None, index=None, sep=' ')
         # #### main key, Categoryの列を、他列の行数まで同じ値で埋め合わせるためfillna(pad)を使えると思ったが、Numpyでは無理みたい。
 
         # ここで英訳リミットが来た時点のループでストップさせる処理
@@ -270,6 +280,8 @@ def main():
 
     # #### SKUを全ループ追加分を作成し、その列を横付け
     id_col = list_df['ID'] #.iloc[] # SKU
+    # id_col.to_csv('id_col.csv',
+    #           header=None, index=None, sep=' ')
     sku_list = []
     # def left(text, n):
     # 	return text[:n]
@@ -295,7 +307,7 @@ def main():
     # macro()
     # shutil.move('C:/Users/Kazuki Yuno/Desktop/00.Myself/04.Buyer/1.利益計算/db_check_yahoo_elem.txt',
     #             'C:/Windows/System32/ScrapingTool_Init/sample_codes/db_check_yahoo_elem.txt')
-    # elems_id_txt = f'{current_dir}\db_check_yahoo_elem.txt' # r'C:\zaico-fixcan_heroku\db_check_yahoo_elem.txt'
+    elems_id_txt = f'{current_dir}\db_check_yahoo_elem.txt' # r'C:\zaico-fixcan_heroku\db_check_yahoo_elem.txt'
     # id_col.to_csv(elems_id_txt,
     #           header=None, index=None, sep=' ')#, mode='a') # mBall_elem_zaicoは、追加された分のIDの価格だけでいい
     id_col.to_sql('1.elem_id', con=engine, if_exists='append',  # or replace
@@ -379,7 +391,7 @@ def el_main(id_col, concat2): # el
                 #     print("画像が見つかりません。。。")
                 # else:
                 page_id_for_scrape = url.split('/')[-1]
-                elem_list = [elems_d, elems_c, page_id_for_scrape]
+                # elem_list = [elems_d, elems_c, page_id_for_scrape]
 
                 # elem_list = pd.DataFrame(elem_list)
                 # elem_list.to_sql('2.elems_dcid', con=engine, if_exists='append',  # or replace
@@ -517,7 +529,7 @@ def el_main(id_col, concat2): # el
         # try とexcept のスコープ両方に入れいてたが、zaicoは双方の後に、以下を入れてる
         page_id_for_scrape = url.split('/')[-1]
 
-        elem_list = [elems_d, elems_c, page_id_for_scrape]
+        # elem_list = [elems_d, elems_c, page_id_for_scrape]
         # writer.writerow(elem_list)
         # elem_list = pd.DataFrame(elem_list)
         # elem_list.to_sql('3.elems_dcid', con=engine, if_exists='append',  # or replace
