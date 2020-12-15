@@ -296,9 +296,11 @@ def main():
     # macro()
     # shutil.move('C:/Users/Kazuki Yuno/Desktop/00.Myself/04.Buyer/1.利益計算/db_check_yahoo_elem.txt',
     #             'C:/Windows/System32/ScrapingTool_Init/sample_codes/db_check_yahoo_elem.txt')
-    elems_id_txt = f'{current_dir}\db_check_yahoo_elem.txt' # r'C:\zaico-fixcan_heroku\db_check_yahoo_elem.txt'
-    id_col.to_csv(elems_id_txt,
-              header=None, index=None, sep=' ')#, mode='a') # mBall_elem_zaicoは、追加された分のIDの価格だけでいい
+    # elems_id_txt = f'{current_dir}\db_check_yahoo_elem.txt' # r'C:\zaico-fixcan_heroku\db_check_yahoo_elem.txt'
+    # id_col.to_csv(elems_id_txt,
+    #           header=None, index=None, sep=' ')#, mode='a') # mBall_elem_zaicoは、追加された分のIDの価格だけでいい
+    id_col.to_sql('elem_id', con=engine, if_exists='append',  # or replace
+                  index=False)
 
     # time.sleep(10) # 時間置かないと、elems_yahooでTxtファイルがないと言われることがある
     # wb2.save()
@@ -327,17 +329,18 @@ def main():
     # fr = [element for element in result.h3 if isinstance(element, NavigableString)]
     # print(fr[0])
 
-    el_csv = f'{current_dir}\db_yahoo_elements.csv' # r'C:\zaico-fixcan_heroku/db_yahoo_elements.csv' #C:/Users/kazuki_juno/Desktop/00.Myself/04.Buyer/1.利益計算/db_yahoo_elements.csv'
-    with open(el_csv, 'w', encoding='utf-8-sig', newline='', errors='ignore') as f:
+    # el_csv = f'{current_dir}\db_yahoo_elements.csv' # r'C:\zaico-fixcan_heroku/db_yahoo_elements.csv' #C:/Users/kazuki_juno/Desktop/00.Myself/04.Buyer/1.利益計算/db_yahoo_elements.csv'
+    # with open(el_csv, 'w', encoding='utf-8-sig', newline='', errors='ignore') as f:
         # elyahoo.main(f, el_csv, concat2)
-        el_main(f, el_csv, elems_id_txt, concat2)
+    el_main(id_col, concat2)
 
 
 import csv # は要らない
-def el_main(f, el, txt, concat2):
-    writer = csv.writer(f)
-    with open(txt) as f: #
-        page_id_list = [str(row) for row in f]
+def el_main(id_col, concat2): # el
+    # writer = csv.writer(f)
+    # with open(txt) as f: #
+    #     page_id_list = [str(row) for row in f]
+    # page_id_list = [str(row) for row in id_col]
     # img_list = []
     # id_list = []
     # arr = np.empty([0, 2])
@@ -345,7 +348,7 @@ def el_main(f, el, txt, concat2):
     arr_img = np.empty([0, 2]) # 0, 2 だと２列分のみ＞ 
     arr_pr = np.empty([0, 2])
     # print(arr)
-    for page_id in page_id_list: #[:5]: #[10:]:#[347:352]:#[:10]:
+    for page_id in id_col: #[:5]: #[10:]:#[347:352]:#[:10]:
         print(page_id)
         url = f"https://page.auctions.yahoo.co.jp/jp/auction/{page_id}"
         try:
@@ -378,8 +381,12 @@ def el_main(f, el, txt, concat2):
                 # else:
                 page_id_for_scrape = url.split('/')[-1]
                 elem_list = [elems_d, elems_c, page_id_for_scrape]
-                writer.writerow(elem_list)
-                time.sleep(0.5)
+
+                elem_list = pd.DataFrame(elem_list)
+                elem_list.to_sql('elems_dcid', con=engine, if_exists='append',  # or replace
+                    index=False)
+                # writer.writerow(elem_list)
+                time.sleep(0.2)
                 
                 img_np = np.array([[page_id_for_scrape], [src_fact]]).T  # transpose()  # elem_img]) # src_list]
                 arr_img = np.r_[arr_img, img_np]
@@ -512,7 +519,10 @@ def el_main(f, el, txt, concat2):
         page_id_for_scrape = url.split('/')[-1]
 
         elem_list = [elems_d, elems_c, page_id_for_scrape]
-        writer.writerow(elem_list)
+        # writer.writerow(elem_list)
+        elem_list = pd.DataFrame(elem_list)
+        elem_list.to_sql('elems_dcid', con=engine, if_exists='append',  # or replace
+                    index=False) # 前回は同じCSVファイルに出してたから、同じSQLデータベースで良いはず
 
         dc_np = np.array([[page_id_for_scrape], [elems_d], [elems_c]]).T  # transpose()  # elem_img]) # src_list]
         arr_descon = np.r_[arr_descon, dc_np]
